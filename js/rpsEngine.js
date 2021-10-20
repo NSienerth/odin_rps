@@ -23,7 +23,7 @@ function signToNum(sign) {
         case ("scissors"):
             return 4;
         default:
-            return "Bad Input";
+            return 3;
     }
 }
 
