@@ -1,3 +1,17 @@
+const buttons = document.querySelectorAll('button');
+
+buttons.forEach((button) => {
+    button.addEventListener('click', () => {
+        playRound(parseInt(button.id));
+    });
+});
+
+const results = document.querySelector('.outcome');
+const score = document.querySelector('.score')
+let playerScore = 0;
+let computerScore = 0;
+results.textContent = "Select your weapon."
+score.textContent = `Player: ${playerScore}    Computer: ${computerScore}`
 //converts numerical values to strings for printing
 function numToSign(num) {
     switch (num) {
@@ -13,19 +27,6 @@ function numToSign(num) {
             return console.log("Error, bad input");
     }
 }
-//assigns player choices a numerical value to determine victory
-function signToNum(sign) {
-    switch (sign.toLowerCase()) {
-        case ("rock"):
-            return 2;
-        case ("paper"):
-            return 3;
-        case ("scissors"):
-            return 4;
-        default:
-            return 3;
-    }
-}
 
 function computerPlay() {
     // Determines a -1, 0, or 1(lose, draw, win)
@@ -33,33 +34,25 @@ function computerPlay() {
 }
 
 function playRound(playerSelection, computerSelection = computerPlay()) {
-    let playerNum = signToNum(playerSelection);
-    let computerNum = computerSelection + playerNum;
-    if(computerNum > playerNum) {
-        return [`You lose! ${numToSign(computerNum)} beats ${numToSign(playerNum)}.`, -1]
+    let computerNum = computerSelection + playerSelection;
+    if(computerSelection === 1) {
+        computerScore++;
+        results.textContent = `You lose! ${numToSign(playerSelection+computerSelection)} beats ${numToSign(playerSelection)}.`;
+        score.textContent = `Player: ${playerScore}    Computer: ${computerScore}`
     }
-    else if(computerNum < playerNum) {
-        return [`You win! ${numToSign(playerNum)} beats ${numToSign(computerNum)}.`, 1]
+    else if(computerSelection === -1) {
+        playerScore++;
+        results.textContent = `You win! ${numToSign(playerSelection)} beats ${numToSign(playerSelection+computerSelection)}.`;
+        score.textContent = `Player: ${playerScore}    Computer: ${computerScore}`
     }
-    else if(computerNum == playerNum) {
-        return [`It's a draw! You both selected ${numToSign(playerNum)}.`, 0]
+    else if(computerSelection === 0) {
+        results.textContent = `It's a draw! You both selected ${numToSign(playerSelection)}.`;
+        score.textContent = `Player: ${playerScore}    Computer: ${computerScore}`
     }
-}
 
-function game(rounds = 5) {
-    let score = 0;
-    for(let i = 1; i <= rounds; i++) {
-        let result = playRound(prompt("Rock, Paper, or Scissors?"));
-        score += result[1];
-        console.log(result[0]);
-    }
-    if (score == 0){
-        return "The game is a draw, no winner.";
-    }
-    else if(score>0) {
-        return `The game is over. You beat your opponent by ${score} points!`;
-    }
-    else {
-        return `The game is over. The computer won by ${score*-1} points.`;
+    if(playerScore === 5 || computerScore===5) {
+        score.textContent = `Game over! ${(playerScore ===5) ? "Player" : "Computer"} is victorious! Scores restarting.`
+        playerScore = 0;
+        computerScore = 0;
     }
 }
